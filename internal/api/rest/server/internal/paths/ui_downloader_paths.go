@@ -25,6 +25,7 @@ const (
 	EventsPath       = "/events"
 	MediaItemsPath   = "/items"
 	ChannelsPath     = "/channels"
+	PlaylistsPath    = "/playlists"
 	UploadPath       = "/upload"
 
 	// Paths items Downloader
@@ -39,6 +40,7 @@ const (
 	MediaItemRefreshPath         = MediaItemsPath + "/{itemId}/refresh"
 	MediaItemReWatchTrackingPath = MediaItemsPath + "/{itemId}/watch-tracking"
 	MediaItemWatchPositionPath   = MediaItemsPath + "/{itemId}/watch-position"
+	MediaItemPlaylistsPath       = MediaItemsPath + "/{itemId}/playlists"
 
 	// Paths Uploader
 	UploadFilePath = UploadPath + "/{fileId}"
@@ -46,23 +48,31 @@ const (
 	// Paths channels
 	ChannelPath = ChannelsPath + "/{channelId}"
 
+	// Paths playlists
+	PlaylistPath      = PlaylistsPath + "/{playlistId}"
+	PlaylistItemsPath = PlaylistPath + "/items/{itemId}"
+
 	// Paths users
 	UserLoginPath     = UsersPath + "/{login}"
 	UserDownloadsPath = UserLoginPath + "/downloads"
 
 	// Downloader Paths
-	DownloaderAccountMenuPath  = DownloaderGroup + AccountMenuPath
-	DownloaderSettingsMenuPath = DownloaderGroup + SettingsMenuPath
-	DownloaderGrabPath         = DownloaderGroup + GrabPath
-	DownloaderShareTargetPath  = DownloaderGroup + ShareTargetPath
-	DownloaderItemsPath        = DownloaderGroup + MediaItemsPath
-	DownloaderDownloadFilePath = DownloaderGroup + DownloadFilePath
-	DownloaderSearchPath       = DownloaderGroup + SearchPath
-	DownloaderEventsPath       = DownloaderGroup + EventsPath
-	DownloaderChannelsPath     = DownloaderGroup + ChannelsPath
-	DownloaderUsersPath        = DownloaderGroup + ChannelPath
-	DownloaderUploadPath       = DownloaderGroup + UploadPath
-	DownloaderUploadFilePath   = DownloaderGroup + UploadFilePath
+	DownloaderAccountMenuPath   = DownloaderGroup + AccountMenuPath
+	DownloaderSettingsMenuPath  = DownloaderGroup + SettingsMenuPath
+	DownloaderGrabPath          = DownloaderGroup + GrabPath
+	DownloaderShareTargetPath   = DownloaderGroup + ShareTargetPath
+	DownloaderItemsPath         = DownloaderGroup + MediaItemsPath
+	DownloaderDownloadFilePath  = DownloaderGroup + DownloadFilePath
+	DownloaderSearchPath        = DownloaderGroup + SearchPath
+	DownloaderEventsPath        = DownloaderGroup + EventsPath
+	DownloaderChannelsPath      = DownloaderGroup + ChannelsPath
+	DownloaderPlaylistsPath     = DownloaderGroup + PlaylistsPath
+	DownloaderPlaylistPath      = DownloaderGroup + PlaylistPath
+	DownloaderPlaylistItemPath  = DownloaderGroup + PlaylistItemsPath
+	DownloaderItemPlaylistsPath = DownloaderGroup + MediaItemPlaylistsPath
+	DownloaderUsersPath         = DownloaderGroup + ChannelPath
+	DownloaderUploadPath        = DownloaderGroup + UploadPath
+	DownloaderUploadFilePath    = DownloaderGroup + UploadFilePath
 )
 
 func buildMediaItemPath(path string, downloadID uuid.UUID) string {
@@ -88,6 +98,10 @@ func BuildMediaItemStreamPath(downloadID uuid.UUID) string {
 
 func BuildMediaItemEditPath(downloadID uuid.UUID) string {
 	return buildMediaItemPath(MediaItemEditPath, downloadID)
+}
+
+func BuildMediaItemPlaylistsPath(downloadID uuid.UUID) string {
+	return buildMediaItemPath(MediaItemPlaylistsPath, downloadID)
 }
 
 func BuildMediaItemDownloadPath(downloadID uuid.UUID) string {
@@ -116,6 +130,21 @@ func buildChannelPath(path string, channelID uuid.UUID) string {
 
 func BuildChannelPath(channelID uuid.UUID) string {
 	return buildChannelPath(ChannelPath, channelID)
+}
+
+func buildPlaylistPath(path string, playlistID uuid.UUID) string {
+	id := idcodec.EncodeUUIDBase64URL(playlistID)
+	return DownloaderGroup + strings.Replace(path, "{playlistId}", id, 1)
+}
+
+func BuildPlaylistPath(playlistID uuid.UUID) string {
+	return buildPlaylistPath(PlaylistPath, playlistID)
+}
+
+func BuildPlaylistItemPath(playlistID, downloadID uuid.UUID) string {
+	path := strings.Replace(PlaylistItemsPath, "{playlistId}", idcodec.EncodeUUIDBase64URL(playlistID), 1)
+	path = strings.Replace(path, "{itemId}", idcodec.EncodeUUIDBase64URL(downloadID), 1)
+	return DownloaderGroup + path
 }
 
 func buildUserLoginPath(path string, login string) string {

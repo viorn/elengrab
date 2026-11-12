@@ -33,6 +33,9 @@ type MediaDownload interface {
 	IterateAll(ctx context.Context, fn func(*ddownload.MediaDownload) error) error
 	IterateAllWithDeleted(ctx context.Context, fn func(*ddownload.MediaDownload) error) error
 
+	// ListByPlaylist returns media downloads that belong to the playlist.
+	ListByPlaylist(ctx context.Context, playlistID uuid.UUID, options dtypes.QueryMediaOptions) ([]*ddownload.MediaDownload, error)
+
 	Tx(ctx context.Context, fn func(ctx context.Context) error) error
 }
 

@@ -25,6 +25,7 @@ var (
 		"video-preview.css",
 		"notifications.css",
 		"dialog.css",
+		"playlist-dialog.css",
 
 		"theme-switcher.css",
 
@@ -51,6 +52,24 @@ var (
 
 		cssFileNames{
 			"page-channel.css",
+		}...,
+	)
+
+	playlistsPageCssPaths = append(
+		pagesListCssPaths,
+
+		cssFileNames{
+			"upload-media-dialog.css",
+			"page-playlists.css",
+		}...,
+	)
+
+	playlistPageCssPaths = append(
+		pagesListCssPaths,
+
+		cssFileNames{
+			"upload-media-dialog.css",
+			"page-playlist.css",
 		}...,
 	)
 

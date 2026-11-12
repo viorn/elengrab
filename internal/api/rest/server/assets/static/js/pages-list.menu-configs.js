@@ -4,6 +4,7 @@ import { initMenu, positionFloatingMenu} from './menu.js';
 import * as notify from './notifications.js';
 import * as view from './pages-list.view.js';
 import { DOM_IDS as GRAB_FORM_DOM_IDS } from './pages-list.grab-form.js';
+import { openPlaylistDialog } from './playlist-dialog.js';
 
 const CLASS_NAMES = {
   ...CONSTS_CLASS_NAMES,
@@ -103,6 +104,10 @@ const rowMenuConfig = {
   menuId: 'rowMenu',
 
   actions: {
+    async addToPlaylist(item) {
+      await openPlaylistDialog(item.dataset.url);
+    },
+
     async errorInfo(item) {
       const errorText = item.dataset.text;
       if (errorText) {
@@ -301,6 +306,23 @@ export function initIndexMenus() {
 
 // Initialize channel page menus
 export function initChannelMenus() {
+  initMenu(accountMenuConfig);
+  initMenu(settingsMenuConfig);
+  initMenu(rowMenuConfig);
+}
+
+// Initialize playlists page menus
+export function initPlaylistsMenus() {
+  initDomElements();
+
+  initMenu(accountMenuConfig);
+  initMenu(settingsMenuConfig);
+}
+
+// Initialize playlist page menus
+export function initPlaylistMenus() {
+  initDomElements();
+
   initMenu(accountMenuConfig);
   initMenu(settingsMenuConfig);
   initMenu(rowMenuConfig);

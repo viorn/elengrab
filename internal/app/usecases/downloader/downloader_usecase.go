@@ -45,6 +45,9 @@ type downloader struct {
 	mediaProcessingDispatcher workerpool.JobDispatcher
 	operationDispatcher       workerpool.JobDispatcher
 
+	// repositories
+	playlistRepo persistence.PlaylistRepositoryFactory
+
 	// internal
 	download             *mediadownload.MediaDownload
 	dlTask               *dltask.DownloadTask
@@ -83,6 +86,7 @@ func NewDownloader(
 
 	// repositories
 	downloadRepo persistence.MediaDownloadRepositoryFactory,
+	playlistRepo persistence.PlaylistRepositoryFactory,
 	dlTaskRepo persistence.DownloadTaskRepositoryFactory,
 	processingTaskRepo persistence.MediaProcessingTaskRepositoryFactory,
 	watchEventRepo persistence.MediaWatchEventRepositoryFactory,
@@ -143,6 +147,8 @@ func NewDownloader(
 		appCtx:  ctx,
 		logger:  logger,
 		mappers: mappers.NewMappers(),
+
+		playlistRepo: playlistRepo,
 
 		// Storages
 		downloadsStorage: downloadsStorage,

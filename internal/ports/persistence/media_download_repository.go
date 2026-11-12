@@ -43,6 +43,9 @@ type MediaDownloadRepository interface {
 	IterateByIDs(ctx context.Context, ids []uuid.UUID, fn func(*ddownload.MediaDownload) error) error
 	GetByIDs(ctx context.Context, ids []uuid.UUID) ([]*ddownload.MediaDownload, error)
 
+	// ListByPlaylist returns media downloads that belong to the playlist.
+	ListByPlaylist(ctx context.Context, playlistID uuid.UUID, options dtypes.QueryMediaOptions) ([]*ddownload.MediaDownload, error)
+
 	GetByStatus(ctx context.Context, status dtypes.MediaDownloadStatus) ([]*ddownload.MediaDownload, error)
 	GetByStatuses(ctx context.Context, statuses []dtypes.MediaDownloadStatus) ([]*ddownload.MediaDownload, error)
 

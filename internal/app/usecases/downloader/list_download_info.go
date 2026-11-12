@@ -53,6 +53,13 @@ func (uc *downloader) ListDownloadInfo(
 	}
 
 	for _, filter := range query.Filters.List() {
+		if filter.Name == dtypes.QueryFilterNamePlaylistID {
+			if playlistID, ok := filter.Value().(uuid.UUID); ok && playlistID != uuid.Nil() {
+				options.PlaylistID = &playlistID
+			}
+			continue
+		}
+
 		options.Filters.Append(filter)
 	}
 
@@ -162,6 +169,12 @@ func (uc *downloader) fetchDownloadsByIndex(
 	}
 
 	opts := *queryOptions
+
+	// Playlist listings bypass the search index: playlist membership lives in
+	// another table of the main database and is not represented in the index.
+	if opts.PlaylistID != nil {
+		return uc.download.ListByPlaylist(ctx, *opts.PlaylistID, opts)
+	}
 
 	var wantLimit uint64
 	if opts.Limit != nil {

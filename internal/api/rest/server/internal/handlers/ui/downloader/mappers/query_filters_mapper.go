@@ -59,6 +59,12 @@ func (m *Mappers) MapQueryFiltersToDomain(filters *types.QueryFilters) (*dtypes.
 				return nil, err
 			}
 			domainFilters.Add(filterName, id)
+		case qkeys.PlaylistIDKey:
+			id, err := idcodec.DecodeUUIDBase64URL(filter.Value)
+			if err != nil {
+				return nil, err
+			}
+			domainFilters.Add(filterName, id)
 		case qkeys.SearchKey:
 			fallthrough
 		case qkeys.SearchQueryKey:

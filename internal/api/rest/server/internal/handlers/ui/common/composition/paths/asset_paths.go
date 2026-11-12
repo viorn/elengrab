@@ -12,6 +12,8 @@ type AssetPaths struct {
 	IndexPageCssPaths         func() ([]string, error)
 	ChannelPageCssPaths       func() ([]string, error)
 	UserDownloadsPageCssPaths func() ([]string, error)
+	PlaylistsPageCssPaths     func() ([]string, error)
+	PlaylistPageCssPaths      func() ([]string, error)
 
 	AuthPageCssPaths      func() ([]string, error)
 	AdminPageCssPaths     func() ([]string, error)
@@ -21,6 +23,8 @@ type AssetPaths struct {
 	IndexPageJsPaths         func(legacy bool) ([]JsScript, error)
 	ChannelPageJsPaths       func(legacy bool) ([]JsScript, error)
 	UserDownloadsPageJsPaths func(legacy bool) ([]JsScript, error)
+	PlaylistsPageJsPaths     func(legacy bool) ([]JsScript, error)
+	PlaylistPageJsPaths      func(legacy bool) ([]JsScript, error)
 
 	AuthPageJsPaths      func(legacy bool) ([]JsScript, error)
 	AdminPageJsPaths     func(legacy bool) ([]JsScript, error)
@@ -41,6 +45,8 @@ func NewAssetPaths(assets *assets.Assets) AssetPaths {
 		IndexPageCssPaths:         indexPageCssPaths.newLoader(assets, loaders.cssPaths),
 		ChannelPageCssPaths:       channelPageCssPaths.newLoader(assets, loaders.cssPaths),
 		UserDownloadsPageCssPaths: userDownloadsPageCssPaths.newLoader(assets, loaders.cssPaths),
+		PlaylistsPageCssPaths:     playlistsPageCssPaths.newLoader(assets, loaders.cssPaths),
+		PlaylistPageCssPaths:      playlistPageCssPaths.newLoader(assets, loaders.cssPaths),
 
 		AuthPageCssPaths:      authPageCssPaths.newLoader(assets, loaders.cssPaths),
 		AdminPageCssPaths:     adminPageCssPaths.newLoader(assets, loaders.cssPaths),
@@ -50,6 +56,8 @@ func NewAssetPaths(assets *assets.Assets) AssetPaths {
 		IndexPageJsPaths:         indexPageJsPaths.newLoader(ctx, assets),
 		ChannelPageJsPaths:       channelPageJsPaths.newLoader(ctx, assets),
 		UserDownloadsPageJsPaths: userDownloadsPageJsPaths.newLoader(ctx, assets),
+		PlaylistsPageJsPaths:     playlistsPageJsPaths.newLoader(ctx, assets),
+		PlaylistPageJsPaths:      playlistPageJsPaths.newLoader(ctx, assets),
 
 		AuthPageJsPaths:      authPageJsPaths.newLoader(ctx, assets),
 		AdminPageJsPaths:     adminPageJsPaths.newLoader(ctx, assets),

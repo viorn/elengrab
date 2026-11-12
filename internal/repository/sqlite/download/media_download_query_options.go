@@ -18,6 +18,12 @@ type mediaDownloadQueryOptions struct {
 	downloadIDs    []uuid.UUID
 
 	partialHash **string
+
+	// playlistID limits the result to media belonging to the playlist.
+	playlistID *uuid.UUID
+
+	// searchText performs a case-insensitive search over title and description.
+	searchText *string
 }
 
 type queryArgs struct {
@@ -45,6 +51,11 @@ func (r *MediaDownloadRepository) WithOptions(options dtypes.QueryMediaOptions) 
 
 	if options.Filters != nil && options.Filters.Len() > 0 {
 		r.WithFilters(options.Filters.List()...)
+	}
+
+	if options.PlaylistID != nil && *options.PlaylistID != uuid.Nil() {
+		playlistID := *options.PlaylistID
+		r.queryOptions.playlistID = &playlistID
 	}
 
 	return r
@@ -108,6 +119,14 @@ func (r *MediaDownloadRepository) WithFilters(filters ...dtypes.QueryFilter) per
 		}
 
 		switch filter.Name {
+		case dtypes.QueryFilterNamePlaylistID:
+			if playlistID, ok := filter.Value().(uuid.UUID); ok && playlistID != uuid.Nil() {
+				r.queryOptions.playlistID = &playlistID
+			}
+		case dtypes.QueryFilterNameSearchQuery:
+			if text, ok := filter.Value().(string); ok && text != "" {
+				r.queryOptions.searchText = &text
+			}
 		case dtypes.QueryFilterNameDownloadIDs:
 			ids, ok := filter.Value().([]uuid.UUID)
 			if ok {

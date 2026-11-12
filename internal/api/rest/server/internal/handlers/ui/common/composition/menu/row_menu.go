@@ -27,11 +27,12 @@ type rowMenuAction struct {
 }
 
 const (
-	rowMenuActionErrorInfo  = "error-info"
-	rowMenuActionCopyLink   = "copy-link"
-	rowMenuActionCreateLink = "create-link"
-	rowMenuActionDeleteLink = "delete-link"
-	rowMenuActionEdit       = "edit"
+	rowMenuActionAddToPlaylist = "add-to-playlist"
+	rowMenuActionErrorInfo     = "error-info"
+	rowMenuActionCopyLink      = "copy-link"
+	rowMenuActionCreateLink    = "create-link"
+	rowMenuActionDeleteLink    = "delete-link"
+	rowMenuActionEdit          = "edit"
 )
 
 var rowMenuActions = []rowMenuAction{
@@ -134,6 +135,19 @@ var rowMenuActions = []rowMenuAction{
 		icon:              icons.DownloaderRowMenuDeleteLinkIcon,
 		visibleStatuses:   dtypes.MediaDownloadCompletedStatuses(),
 		requireEditAccess: true,
+	},
+
+	{
+		RenderType: renderTypeAction,
+		Action:     rowMenuActionAddToPlaylist,
+		Title:      "Add to playlist…",
+		Link: linkOptions{
+			URLTemplate: httppaths.DownloaderGroup + httppaths.MediaItemPlaylistsPath,
+			Placeholder: RowMenuActionItemIDKey,
+		},
+
+		icon:            icons.DownloaderRowMenuAddToPlaylistIcon,
+		visibleStatuses: dtypes.MediaDownloadCompletedStatuses(),
 	},
 
 	{

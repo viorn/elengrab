@@ -109,6 +109,56 @@ var (
 		},
 	}
 
+	playlistsPageJsPaths = jsScripts{
+		{
+			Path:   "htmx.min.js",
+			Type:   "",
+			Defer:  false,
+			Legacy: LegacyNo,
+		},
+		{
+			Path:   "htmx-1.9.12.min.js",
+			Type:   "",
+			Defer:  false,
+			Legacy: LegacyYes,
+		},
+		{
+			Path:  "theme-switcher.js",
+			Type:  "",
+			Defer: true,
+		},
+		{
+			Path:  "playlists.page.js",
+			Type:  "module",
+			Defer: false,
+		},
+	}
+
+	playlistPageJsPaths = jsScripts{
+		{
+			Path:   "htmx.min.js",
+			Type:   "",
+			Defer:  false,
+			Legacy: LegacyNo,
+		},
+		{
+			Path:   "htmx-1.9.12.min.js",
+			Type:   "",
+			Defer:  false,
+			Legacy: LegacyYes,
+		},
+		{
+			Path:  "theme-switcher.js",
+			Type:  "",
+			Defer: true,
+		},
+		{
+			Path:  "playlist.page.js",
+			Type:  "module",
+			Defer: false,
+		},
+	}
+
 	adminPageJsPaths = jsScripts{
 		{
 			Path:   "htmx.min.js",

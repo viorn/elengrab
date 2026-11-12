@@ -391,6 +391,20 @@ func (h *DownloaderHandlers) extractChannelID(ctx *fasthttp.RequestCtx) (uuid.UU
 	return channelID, nil
 }
 
+func (h *DownloaderHandlers) extractPlaylistID(ctx *fasthttp.RequestCtx) (uuid.UUID, error) {
+	encodedPlaylistID, ok := ctx.UserValue(qkeys.PlaylistIDKey.String()).(string)
+	if !ok || encodedPlaylistID == "" {
+		return uuid.Nil(), apierrors.ErrPlaylistIDIsRequired
+	}
+
+	playlistID, err := idcodec.DecodeUUIDBase64URL(encodedPlaylistID)
+	if err != nil {
+		return uuid.Nil(), apierrors.ErrPlaylistIDIsIncorrect.Wrap(err)
+	}
+
+	return playlistID, nil
+}
+
 func (h *DownloaderHandlers) extractShortURL(rawURL string) (string, string) {
 	u, err := url.Parse(rawURL)
 	if err != nil {

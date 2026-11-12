@@ -116,6 +116,20 @@ type DownloaderAPI interface {
 	GetSiteImage(ctx context.Context, url string) (*dtypes.ImageData, error)
 	TrackMediaWatchEvent(ctx context.Context, authCtx dauth.AuthContext, req dto.TrackMediaWatchEventRequest) error
 	SystemInfo() dto.SystemInfoResponse
+
+	// Playlists
+	CreatePlaylist(ctx context.Context, authCtx dauth.AuthContext, title string) (*ddownload.Playlist, error)
+	ListPlaylists(ctx context.Context, authCtx dauth.AuthContext) ([]*ddownload.Playlist, error)
+	GetPlaylist(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID) (*ddownload.Playlist, error)
+	RenamePlaylist(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID, title string) error
+	DeletePlaylist(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID) error
+	AddPlaylistItem(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID, downloadID uuid.UUID) error
+	RemovePlaylistItem(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID, downloadID uuid.UUID) error
+	ListPlaylistsForItem(
+		ctx context.Context,
+		authCtx dauth.AuthContext,
+		downloadID uuid.UUID,
+	) ([]*PlaylistWithMembership, error)
 }
 
 type InternalDownloader interface {

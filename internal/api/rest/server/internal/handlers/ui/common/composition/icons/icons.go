@@ -22,6 +22,7 @@ var (
 	UploadMenuPlusIcon        = newIcon("UploadMenuPlusIconName", "plus-icon.svg")
 	UploadMenuUploadFileIcon  = newIcon("UploadMenuUploadFileIconName", "upload-file-icon.svg")
 	UploadMenuMyDownloadsIcon = newIcon("UploadMenuMyDownloadsIconName", "list-icon.svg")
+	UploadMenuPlaylistsIcon   = newIcon("UploadMenuPlaylistsIconName", "list-icon.svg")
 
 	IndexGrabSettingsButtonIcon = newIcon("IndexGrabSettingsButtonIconName", "settings-icon.svg")
 	IndexGrabGetButtonIcon      = newIcon("IndexGrabGetButtonIconName", "download-cloud-icon.svg")
@@ -64,6 +65,7 @@ var (
 	DownloaderRowMenuEditIcon            = newIcon("DownloaderRowMenuEditIconName", "edit-icon.svg")
 	DownloaderRowMenuUpdateMetadataIcon  = newIcon("DownloaderRowMenuUpdateMetadataIconName", "update-icon.svg")
 	DownloaderRowMenuUpdateErrorInfoIcon = newIcon("DownloaderRowMenuUpdateErrorInfoIconName", "download-warning-icon.svg")
+	DownloaderRowMenuAddToPlaylistIcon   = newIcon("DownloaderRowMenuAddToPlaylistIconName", "list-icon.svg")
 
 	AdminUsersIcon    = newIcon("AdminUsersIconName", "users.svg")
 	AdminUserEditIcon = newIcon("AdminUserEditIconName", "user-edit.svg")

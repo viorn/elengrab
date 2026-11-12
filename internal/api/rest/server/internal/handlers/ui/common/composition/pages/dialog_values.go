@@ -18,6 +18,27 @@ type AboutDialogValues struct {
 	DenoVersion   string
 }
 
+type PlaylistDialogValues struct {
+	LogoIcon template.HTML
+
+	DownloadID string
+
+	Playlists    []PlaylistDialogItem
+	HasPlaylists bool
+	CanCreate    bool
+
+	ToggleURL string
+	CreateURL string
+}
+
+type PlaylistDialogItem struct {
+	EncodedPlaylistID string
+	Title             string
+	ItemsCount        int64
+	Checked           bool
+	CanEdit           bool
+}
+
 type UploadFileDialogValues struct {
 	LogoIcon template.HTML
 

@@ -65,6 +65,8 @@ func (m *Mappers) MapSearchQueryToSearchValues(queryItems *types.QueryFilters) (
 			filters.Add(item.Key, item.Value)
 		case qkeys.ChannelIDKey:
 			filters.Add(item.Key, item.Value)
+		case qkeys.PlaylistIDKey:
+			filters.Add(item.Key, item.Value)
 		case qkeys.SearchParametersKey:
 			parameters, err := types.ParseSearchEncodeQueryStringToParameters(item.Value)
 			if err != nil {

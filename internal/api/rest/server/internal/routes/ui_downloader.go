@@ -69,6 +69,16 @@ func (r *routes) registerUIDownloader(handlers *downloader.DownloaderHandlers, s
 			g.GET(httppaths.DownloadFilePath, handlers.DownloadFileHandler)
 
 			g.POST(httppaths.MediaItemReWatchTrackingPath, handlers.MediaItemWatchTrackingHandler)
+
+			// Playlists (read)
+			g.HEAD(httppaths.PlaylistsPath, handlers.PlaylistsPageHandler)
+			g.GET(httppaths.PlaylistsPath, handlers.PlaylistsPageHandler)
+
+			g.HEAD(httppaths.PlaylistPath, handlers.PlaylistPageHandler)
+			g.GET(httppaths.PlaylistPath, handlers.PlaylistPageHandler)
+
+			g.HEAD(httppaths.MediaItemPlaylistsPath, handlers.MediaItemPlaylistsHandler)
+			g.GET(httppaths.MediaItemPlaylistsPath, handlers.MediaItemPlaylistsHandler)
 		}
 
 		// With middleware (error, auth or guest)
@@ -96,6 +106,16 @@ func (r *routes) registerUIDownloader(handlers *downloader.DownloaderHandlers, s
 			g.HEAD(httppaths.UploadFilePath, handlers.QueueUploadedFileHandler)
 			g.POST(httppaths.UploadFilePath, handlers.QueueUploadedFileHandler)
 			g.DELETE(httppaths.UploadFilePath, handlers.DeleteUploadedFileHandler)
+
+			// Playlists (write)
+			g.POST(httppaths.PlaylistsPath, handlers.CreatePlaylistHandler)
+			g.PATCH(httppaths.PlaylistPath, handlers.RenamePlaylistHandler)
+			g.DELETE(httppaths.PlaylistPath, handlers.DeletePlaylistHandler)
+
+			g.POST(httppaths.PlaylistItemsPath, handlers.AddPlaylistItemHandler)
+			g.DELETE(httppaths.PlaylistItemsPath, handlers.RemovePlaylistItemHandler)
+
+			g.POST(httppaths.MediaItemPlaylistsPath, handlers.MediaItemPlaylistsHandler)
 		}
 
 		// With middleware (error, require auth mode)

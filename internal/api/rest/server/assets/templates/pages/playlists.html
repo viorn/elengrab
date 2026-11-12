@@ -1,0 +1,34 @@
+{{- define "playlists-page" }}
+    {{- template "base" . }}
+{{- end }}
+
+{{- define "header-actions" }}
+  {{- template "channel-header-actions" . }}
+{{- end }}
+
+{{- define "header" }}
+  <header class="header" id="header">
+    {{- template "base-header-content" . }}
+  </header>
+{{- end }}
+
+{{- define "main" }}
+  <main class="main">
+    {{- template "playlists-list" . }}
+  </main>
+{{- end }}
+
+{{- define "footer" }}
+  <footer class="footer">
+      {{- template "channel-footer-content" . }}
+  </footer>
+{{- end }}
+
+{{- define "overlays" }}
+    {{- template "account-menu" . }}
+    {{- template "settings-menu" . }}
+    {{- template "menu-overlay" . }}
+    {{- template "notification-area" . }}
+    {{- template "about-dialog" . }}
+    {{- template "playlist-dialog" . }}
+{{- end }}

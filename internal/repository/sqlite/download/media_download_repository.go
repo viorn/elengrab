@@ -528,6 +528,40 @@ func (r *MediaDownloadRepository) iterateAll(
 		conditions = append(conditions, squirrel.Eq{eDownload.FieldName(&eDownload.UserID, aliasDownloads): filterUserID})
 	}
 
+	if r.queryOptions.playlistID != nil {
+		conditions = append(conditions, squirrel.Expr(
+			"EXISTS (SELECT 1 FROM playlist_items pi WHERE pi.download_id = f.download_id AND pi.playlist_id = ?)",
+			r.queryOptions.playlistID.String(),
+		))
+
+		if !r.queryOptions.LastRecord.CreatedAt.IsZero() {
+			createdAtField := eDownload.FieldName(&eDownload.CreatedAt, aliasDownloads)
+			downloadIDField := eDownload.FieldName(&eDownload.DownloadID, aliasDownloads)
+
+			lastCreatedAt := r.queryOptions.LastRecord.CreatedAt.UTC()
+			lastDownloadID := r.queryOptions.LastRecord.ID.String()
+
+			if r.queryOptions.ViewMode == dtypes.QueryMediaViewModeOld {
+				conditions = append(conditions, squirrel.Expr(
+					"("+createdAtField+" > ? OR ("+createdAtField+" = ? AND "+downloadIDField+" > ?))",
+					lastCreatedAt, lastCreatedAt, lastDownloadID,
+				))
+			} else {
+				conditions = append(conditions, squirrel.Expr(
+					"("+createdAtField+" < ? OR ("+createdAtField+" = ? AND "+downloadIDField+" < ?))",
+					lastCreatedAt, lastCreatedAt, lastDownloadID,
+				))
+			}
+		}
+	}
+
+	if text := r.queryOptions.searchText; text != nil && *text != "" {
+		conditions = append(conditions, squirrel.Or{
+			squirrel.Like{eDownload.FieldName(&eDownload.MediaTitle, aliasDownloads): "%" + *text + "%"},
+			squirrel.Like{eDownload.FieldName(&eDownload.MediaDescription, aliasDownloads): "%" + *text + "%"},
+		})
+	}
+
 	if r.queryOptions.partialHash != nil {
 		fieldName := eDownload.FieldName(&eDownload.PartialHash, aliasDownloads)
 		if *r.queryOptions.partialHash == nil {
@@ -545,6 +579,17 @@ func (r *MediaDownloadRepository) iterateAll(
 	if len(orderBys) == 0 {
 		orderBys = dbutils.SortBy(eDownload.FieldName(&eDownload.CreatedAt), dbutils.OrderDescending).List()
 	}
+
+	if r.queryOptions.playlistID != nil {
+		direction := dbutils.OrderDescending
+		if r.queryOptions.ViewMode == dtypes.QueryMediaViewModeOld {
+			direction = dbutils.OrderAscending
+		}
+
+		orderBys = dbutils.SortBy(eDownload.FieldName(&eDownload.CreatedAt), direction).List()
+		orderBys.Add(eDownload.FieldName(&eDownload.DownloadID), direction)
+	}
+
 	orderBys = orderBys.WithAlias(aliasDownloads)
 
 	sqlWhere := conditions
@@ -611,6 +656,27 @@ func (r *MediaDownloadRepository) iterateAll(
 
 func (r *MediaDownloadRepository) IterateAll(ctx context.Context, fn func(*ddownload.MediaDownload) error) error {
 	return r.iterateAll(ctx, fn)
+}
+
+// ListByPlaylist returns media downloads that belong to the playlist.
+func (r *MediaDownloadRepository) ListByPlaylist(
+	ctx context.Context,
+	playlistID uuid.UUID,
+	options dtypes.QueryMediaOptions,
+) ([]*ddownload.MediaDownload, error) {
+	r.WithOptions(options)
+
+	var downloads []*ddownload.MediaDownload
+
+	err := r.iterateAll(ctx, func(download *ddownload.MediaDownload) error {
+		downloads = append(downloads, download)
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return downloads, nil
 }
 
 func (r *MediaDownloadRepository) IterateByIDs(ctx context.Context, ids []uuid.UUID, fn func(*ddownload.MediaDownload) error) error {

@@ -24,6 +24,8 @@ var (
 	ChannelIDKey       = keys.addWithName("channelId", "cid", dtypes.QueryFilterNameChannelID)
 	ChannelPlatformKey = keys.add("platform", "cpl")
 
+	PlaylistIDKey = keys.addWithName("playlistId", "pid", dtypes.QueryFilterNamePlaylistID)
+
 	SearchKey      = keys.addWithName("query", "qr", dtypes.QueryFilterNameSearchQuery)
 	SearchQueryKey = keys.addWithName("searchQuery", "sq", dtypes.QueryFilterNameSearchQuery)
 

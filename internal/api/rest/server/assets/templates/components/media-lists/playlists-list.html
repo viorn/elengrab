@@ -1,0 +1,35 @@
+{{- define "playlists-list" }}
+      <div class="playlists" id="playlists">
+        <div class="playlists__toolbar">
+          <span class="playlists__toolbar-title">Playlists</span>
+          <span class="playlists__toolbar-spacer"></span>
+          {{- if .Values.CanCreate }}
+          <form class="playlists__create" id="playlists-create-form">
+            <input class="playlist-dialog__create-input" type="text" id="playlists-create-input"
+                   placeholder="New playlist name" maxlength="100" autocomplete="off">
+            <button class="modal-dialog__button" type="submit">Create</button>
+          </form>
+          {{- end }}
+        </div>
+        {{- if .Values.HasPlaylists }}
+        <div class="playlists__list" id="playlists-list">
+          {{- range .Values.Playlists }}
+          <a class="playlist-card" href="{{ .URL }}" data-playlist-id="{{ .EncodedPlaylistID }}">
+            <span class="playlist-card__title">{{ .Title }}</span>
+            {{- if .Description }}
+            <span class="playlist-card__description">{{ .Description }}</span>
+            {{- end }}
+            <span class="playlist-card__meta">
+              <span>Items: {{ .ItemsCount }}</span>
+              {{- if .IsShared }}
+              <span class="playlist-badge">Shared</span>
+              {{- end }}
+            </span>
+          </a>
+          {{- end }}
+        </div>
+        {{- else }}
+        <div class="playlists__empty" id="playlists-empty">No playlists yet</div>
+        {{- end }}
+      </div>
+{{- end }}

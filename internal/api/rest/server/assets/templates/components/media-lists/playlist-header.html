@@ -1,0 +1,19 @@
+{{- define "playlist-media-result-header" }}
+        <div class="main-header{{ if not .Values.PlaylistHeader.Show }} hidden{{ end }}" id="playlist-header">
+          <div class="main-header-content">
+            <span class="main-header-title" id="playlist-header-title">{{ .Values.PlaylistHeader.Title }}</span>
+            <span class="main-header-description{{ if not .Values.PlaylistHeader.Description }} hidden{{ end }}" id="playlist-header-description">{{ .Values.PlaylistHeader.Description }}</span>
+          </div>
+          <div class="playlist-header-actions">
+            <span class="playlist-header-count" id="playlist-header-count">Items: {{ .Values.PlaylistHeader.ItemsCount }}</span>
+            <span class="playlist-badge{{ if not .Values.PlaylistHeader.IsShared }} hidden{{ end }}">Shared</span>
+            {{- if .Values.PlaylistHeader.CanEdit }}
+            <button class="modal-dialog__button" type="button" id="playlist-rename-button"
+                data-playlist-id="{{ .Values.PlaylistHeader.EncodedPlaylistID }}"
+                data-playlist-title="{{ .Values.PlaylistHeader.Title }}">Rename</button>
+            <button class="modal-dialog__button" type="button" id="playlist-delete-button"
+                data-playlist-id="{{ .Values.PlaylistHeader.EncodedPlaylistID }}">Delete</button>
+            {{- end }}
+          </div>
+        </div>
+{{- end }}

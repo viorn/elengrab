@@ -196,6 +196,7 @@ func (a *Application) initialize() error {
 			Repositories: slRepositories,
 
 			MediaDownload:         slRepositories.MediaDownload,
+			Playlist:              slRepositories.Playlist,
 			DownloadTask:          slRepositories.DownloadTask,
 			MediaProcessingTask:   slRepositories.MediaProcessingTask,
 			DownloadDataMigration: slRepositories.DownloadDataMigration,

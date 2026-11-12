@@ -9,6 +9,7 @@ const (
 
 	QueryFilterNameUserID     QueryFilterName = "userID"
 	QueryFilterNameChannelID  QueryFilterName = "channelId"
+	QueryFilterNamePlaylistID QueryFilterName = "playlistId"
 	QueryFilterNameTitle      QueryFilterName = "title"
 	QueryFilterNameCreatedAt  QueryFilterName = "createdAt"
 	QueryFilterNameSourceType QueryFilterName = "sourceType"
@@ -21,6 +22,7 @@ var (
 	parseQueryFilterNameMap = map[string]QueryFilterName{
 		"userID":      QueryFilterNameUserID,
 		"channelID":   QueryFilterNameChannelID,
+		"playlistID":  QueryFilterNamePlaylistID,
 		"title":       QueryFilterNameTitle,
 		"createdAt":   QueryFilterNameCreatedAt,
 		"sourceType":  QueryFilterNameSourceType,

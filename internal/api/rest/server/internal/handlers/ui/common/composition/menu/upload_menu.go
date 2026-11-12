@@ -14,6 +14,7 @@ const (
 	uploadMenuActionUploadURL   = "upload-url"
 	uploadMenuActionUploadFile  = "upload-file"
 	uploadMenuActionMyDownloads = "my-downloads"
+	uploadMenuActionPlaylists   = "playlists"
 )
 
 var uploadMenuActions = []uploadMenuAction{
@@ -52,6 +53,18 @@ var uploadMenuActions = []uploadMenuAction{
 		},
 		icon: &icons.UploadMenuMyDownloadsIcon,
 	},
+	{
+		menuAction: menuAction{
+			RenderType: renderTypeLink,
+			Action:     uploadMenuActionPlaylists,
+			Title:      "Playlists",
+			Link: linkOptions{
+				URLTemplate: httppaths.DownloaderPlaylistsPath,
+				NewTab:      false,
+			},
+		},
+		icon: &icons.UploadMenuPlaylistsIcon,
+	},
 }
 
 func UploadMenuActions(userLogin string, hasCreateAccess bool) []uploadMenuAction {
@@ -60,6 +73,10 @@ func UploadMenuActions(userLogin string, hasCreateAccess bool) []uploadMenuActio
 	for _, action := range uploadMenuActions {
 		switch action.Action {
 		case uploadMenuActionUploadURL:
+			if !hasCreateAccess {
+				continue
+			}
+		case uploadMenuActionPlaylists:
 			if !hasCreateAccess {
 				continue
 			}

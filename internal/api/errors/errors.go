@@ -31,6 +31,9 @@ var (
 	ErrChannelIDIsRequired  = errorx.NewMessage("channelId is required", exceptions.INVALID_REQUEST)
 	ErrChannelIDIsIncorrect = errorx.NewMessage("channelId is incorrect", exceptions.INVALID_REQUEST)
 
+	ErrPlaylistIDIsRequired  = errorx.NewMessage("playlistId is required", exceptions.INVALID_REQUEST)
+	ErrPlaylistIDIsIncorrect = errorx.NewMessage("playlistId is incorrect", exceptions.INVALID_REQUEST)
+
 	ErrThumbnailNotFound      = ierrors.ErrThumbnailNotFound
 	ErrThumbnailIdIsRequired  = errorx.NewMessage("thumbnailId is required", exceptions.INVALID_REQUEST)
 	ErrThumbnailIdIsIncorrect = errorx.NewMessage("thumbnailId is incorrect", exceptions.INVALID_REQUEST)

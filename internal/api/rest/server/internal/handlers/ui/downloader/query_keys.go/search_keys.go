@@ -16,6 +16,7 @@ func init() {
 	searchFilterKeys.Append(UserIDKey)
 	searchFilterKeys.Append(UserNameKey)
 	searchFilterKeys.Append(ChannelIDKey)
+	searchFilterKeys.Append(PlaylistIDKey)
 
 	searchParameterFilterKeys.Append(ChannelPlatformKey)
 

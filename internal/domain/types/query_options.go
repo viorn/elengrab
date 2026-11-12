@@ -1,6 +1,8 @@
 package dtypes
 
 import (
+	"uuid"
+
 	"github.com/neosy/elengrab/internal/pkg/dbutils"
 )
 
@@ -20,6 +22,9 @@ type QueryMediaOptions struct {
 
 	Visibility     *QueryMediaVisibility
 	IsGuestRequest bool
+
+	// PlaylistID limits the result to media belonging to the playlist.
+	PlaylistID *uuid.UUID
 }
 
 func NewQueryOptions() QueryOptions {

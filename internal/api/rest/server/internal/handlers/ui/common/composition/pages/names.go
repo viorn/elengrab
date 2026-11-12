@@ -14,6 +14,14 @@ var (
 		key:      "channel-page",
 		fileName: "channel.html",
 	}
+	PlaylistsPage = page{
+		key:      "playlists-page",
+		fileName: "playlists.html",
+	}
+	PlaylistPage = page{
+		key:      "playlist-page",
+		fileName: "playlist.html",
+	}
 	AuthRegisterPage = page{
 		key:      "auth-register-page",
 		fileName: "auth-register.html",
@@ -43,6 +51,8 @@ var (
 		IndexPage,
 		UserDownloadsPage,
 		ChannelPage,
+		PlaylistsPage,
+		PlaylistPage,
 
 		AuthRegisterPage,
 		AuthLoginPage,

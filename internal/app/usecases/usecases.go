@@ -69,6 +69,7 @@ type DepRepositories struct {
 
 	DownloadDataMigration persistence.DownloadDataMigrationRepositoryFactory
 	MediaDownload         persistence.MediaDownloadRepositoryFactory
+	Playlist              persistence.PlaylistRepositoryFactory
 	DownloadTask          persistence.DownloadTaskRepositoryFactory
 	MediaProcessingTask   persistence.MediaProcessingTaskRepositoryFactory
 
@@ -152,6 +153,7 @@ func NewUsecases(ctx context.Context, logger *slog.Logger, deps *Dependencies) *
 
 		// repositories
 		deps.Repositories.MediaDownload,
+		deps.Repositories.Playlist,
 		deps.Repositories.DownloadTask,
 		deps.Repositories.MediaProcessingTask,
 		deps.Repositories.MediaWatchEvent,

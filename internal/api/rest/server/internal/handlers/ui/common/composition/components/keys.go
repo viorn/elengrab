@@ -4,6 +4,8 @@ const (
 	AccountMenuContentKey = "account-menu-content"
 	MenuContentKey        = "menu-content"
 
+	PlaylistDialogContentKey = "playlist-dialog-content"
+
 	ResultRowsKey              = "result-rows"
 	ResultNewRowKey            = "result-new-row"
 	ResultRowStatusKey         = "result-row-status"
