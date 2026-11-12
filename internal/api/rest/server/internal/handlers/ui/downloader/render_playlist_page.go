@@ -61,6 +61,8 @@ func (h *DownloaderHandlers) renderPlaylistPage(
 
 	pagesListValues := pagesdata.BuildPagesListValues(authCtx, query, queryFilters, h.downloader)
 	pagesListValues.HasCreateAccess = false
+	// В плейлисте порядок ручной — сортировка new/popular/old не имеет смысла.
+	pagesListValues.HideViewModeTabs = true
 	pagesListValues.ResultNoRows = rowsBuf.Len() == 0
 	pagesListValues.ResultRowsHTML = template.HTML(rowsBuf.String())
 	pagesListValues.AboutDialog = h.mappers.MapAboutDialogValues(systemInfo)

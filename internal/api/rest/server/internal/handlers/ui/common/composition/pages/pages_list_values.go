@@ -20,6 +20,9 @@ type PagesListValues struct {
 
 	ActiveViewMode string
 	ViewModeTabs   []ViewModeTab
+	// HideViewModeTabs скрывает сортировку new/popular/old: на странице плейлиста
+	// порядок задаётся вручную и сортировки по дате/просмотрам там нет.
+	HideViewModeTabs bool
 
 	HasCreateAccess         bool
 	HasWriteOperationAccess bool

@@ -1,5 +1,5 @@
 {{- define "view-mode-bar" }}
-        <div class="media-result__view-mode-bar">
+        <div class="media-result__view-mode-bar{{ if .Values.HideViewModeTabs }} hidden{{ end }}">
             <div class="view-mode-tabs section-tabs" role="tablist" data-view-mode="{{ .Values.ActiveViewMode }}">
                 {{ range .Values.ViewModeTabs }}
                     <button class="view-mode-tab section-tab{{ if .Active }} active{{ end }}"
