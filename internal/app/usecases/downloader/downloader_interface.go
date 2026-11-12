@@ -125,6 +125,7 @@ type DownloaderAPI interface {
 	DeletePlaylist(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID) error
 	AddPlaylistItem(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID, downloadID uuid.UUID) error
 	RemovePlaylistItem(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID, downloadID uuid.UUID) error
+	ReorderPlaylistItems(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID, downloadIDs []uuid.UUID) error
 	ListPlaylistsForItem(
 		ctx context.Context,
 		authCtx dauth.AuthContext,

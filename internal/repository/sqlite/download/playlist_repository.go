@@ -89,6 +89,75 @@ func (r *PlaylistRepository) save(ctx context.Context, playlist *ddownload.Playl
 	return dbexec.ExecContext(ctx, r.dbEntry, sqlQuery, args, r.retryOptions)
 }
 
+// mergeOrder возвращает сквозной порядок элементов: сначала переданные downloadIDs
+// (в заданном порядке), затем остальные элементы плейлиста в прежнем порядке.
+func (r *PlaylistRepository) mergeOrder(
+	ctx context.Context,
+	playlistID uuid.UUID,
+	downloadIDs []uuid.UUID,
+) ([]uuid.UUID, error) {
+	sqlQuery, args, err := squirrel.
+		Select("download_id").
+		From(playlistItemsTable).
+		Where(squirrel.Eq{"playlist_id": playlistID.String()}).
+		OrderBy("position ASC", "download_id ASC").
+		PlaceholderFormat(squirrel.Dollar).
+		ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("failed to build query: %w", err)
+	}
+
+	db := dbexec.Resolve(ctx, r.dbEntry)
+	rows, err := db.QueryContext(ctx, sqlQuery, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	existing := make(map[uuid.UUID]bool)
+	var allIDs []uuid.UUID
+
+	for rows.Next() {
+		var rawID string
+		if err := rows.Scan(&rawID); err != nil {
+			return nil, err
+		}
+
+		id, err := uuid.Parse(rawID)
+		if err != nil {
+			continue
+		}
+
+		existing[id] = true
+		allIDs = append(allIDs, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	ordered := make([]uuid.UUID, 0, len(allIDs))
+	used := make(map[uuid.UUID]bool, len(downloadIDs))
+
+	for _, id := range downloadIDs {
+		if !existing[id] || used[id] {
+			continue
+		}
+
+		ordered = append(ordered, id)
+		used[id] = true
+	}
+
+	for _, id := range allIDs {
+		if used[id] {
+			continue
+		}
+
+		ordered = append(ordered, id)
+	}
+
+	return ordered, nil
+}
+
 func (r *PlaylistRepository) SoftDelete(ctx context.Context, playlistID uuid.UUID) error {
 	return dbexec.Tx(ctx, r.dbEntry, func(ctx context.Context) error {
 		sqlQuery, args, err := squirrel.
@@ -202,13 +271,14 @@ func (r *PlaylistRepository) List(ctx context.Context, userID *uuid.UUID) ([]*dd
 }
 
 func (r *PlaylistRepository) AddItem(ctx context.Context, playlistID, downloadID uuid.UUID) error {
+	// Новый элемент встаёт в конец: position = max(position) + 1.
 	sqlQuery, args, err := squirrel.
 		Insert(playlistItemsTable).
 		Columns("playlist_id", "download_id", "position", "added_at").
 		Values(
 			playlistID.String(),
 			downloadID.String(),
-			0,
+			squirrel.Expr("(SELECT COALESCE(MAX(position) + 1, 0) FROM "+playlistItemsTable+" WHERE playlist_id = ?)", playlistID.String()),
 			time.Now().UTC(),
 		).
 		Suffix("ON CONFLICT(playlist_id, download_id) DO NOTHING").
@@ -219,6 +289,43 @@ func (r *PlaylistRepository) AddItem(ctx context.Context, playlistID, downloadID
 	}
 
 	return dbexec.ExecContext(ctx, r.dbEntry, sqlQuery, args, r.retryOptions)
+}
+
+// UpdatePositions rewrites the order of playlist items: position = index in downloadIDs.
+// Элементы, которых нет в downloadIDs (например, ещё не загруженные на клиенте),
+// идут следом в прежнем относительном порядке — так нумерация остаётся сквозной.
+func (r *PlaylistRepository) UpdatePositions(ctx context.Context, playlistID uuid.UUID, downloadIDs []uuid.UUID) error {
+	if len(downloadIDs) == 0 {
+		return nil
+	}
+
+	return dbexec.Tx(ctx, r.dbEntry, func(ctx context.Context) error {
+		finalOrder, err := r.mergeOrder(ctx, playlistID, downloadIDs)
+		if err != nil {
+			return err
+		}
+
+		for position, downloadID := range finalOrder {
+			sqlQuery, args, err := squirrel.
+				Update(playlistItemsTable).
+				Set("position", position).
+				Where(squirrel.Eq{
+					"playlist_id": playlistID.String(),
+					"download_id": downloadID.String(),
+				}).
+				PlaceholderFormat(squirrel.Dollar).
+				ToSql()
+			if err != nil {
+				return fmt.Errorf("failed to build query: %w", err)
+			}
+
+			if err := dbexec.ExecContext(ctx, r.dbEntry, sqlQuery, args, r.retryOptions); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }
 
 func (r *PlaylistRepository) RemoveItem(ctx context.Context, playlistID, downloadID uuid.UUID) error {

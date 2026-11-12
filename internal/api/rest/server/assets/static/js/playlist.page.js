@@ -11,6 +11,7 @@ import * as sseClient from "./sse.js";
 import * as rowEventHandlers from './pages-list.sse.events.js';
 import * as commonEventHandlers from './sse.events.js';
 
+import * as playlistPlay from './playlist-play.js';
 import { initPlaylistMenus as initMenus } from './pages-list.menu-configs.js';
 import * as view from './pages-list.view.js';
 import * as search from './pages-list.search.js';
@@ -121,6 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Init playlist header actions
     initPlaylistHeader();
+
+    // Init drag & drop ordering and sequential playback
+    playlistPlay.initReorder();
+    playlistPlay.initPlayback();
 
     // Init inline media player
     initPlayer(DOM_ELEMENTS.mediaPlayer, CLASS_NAMES.mediaResultRowThumbnailImageWrapper);

@@ -468,6 +468,17 @@ func (r *MediaDownloadRepository) iterateAll(
 	selectFields = append(selectFields, eDownloadTask.QueryFieldsWithAlias(aliasDownloadTasks)...)
 	selectFields = append(selectFields, eProcessingTask.QueryFieldsWithAlias(aliasProcessingTasks)...)
 
+	// Позиция элемента внутри плейлиста (NULL, если элемента в плейлисте нет).
+	var playlistPositionExpr, playlistIDString string
+	if r.queryOptions.playlistID != nil {
+		playlistIDString = r.queryOptions.playlistID.String()
+		playlistPositionExpr = fmt.Sprintf(
+			"(SELECT pi.position FROM playlist_items pi WHERE pi.download_id = %s AND pi.playlist_id = '%s')",
+			eDownload.FieldName(&eDownload.DownloadID, aliasDownloads),
+			playlistIDString,
+		)
+	}
+
 	var conditions = squirrel.And{}
 	if len(r.queryOptions.statuses) > 0 {
 		statusStrings := r.downloadStatusesToStrings(r.queryOptions.statuses)
@@ -534,24 +545,18 @@ func (r *MediaDownloadRepository) iterateAll(
 			r.queryOptions.playlistID.String(),
 		))
 
-		if !r.queryOptions.LastRecord.CreatedAt.IsZero() {
-			createdAtField := eDownload.FieldName(&eDownload.CreatedAt, aliasDownloads)
+		// Порядок в плейлисте задаётся вручную (playlist_items.position),
+		// поэтому и курсор пагинации считается по позиции, а не по дате.
+		if r.queryOptions.LastRecord.ID != uuid.Nil() {
 			downloadIDField := eDownload.FieldName(&eDownload.DownloadID, aliasDownloads)
-
-			lastCreatedAt := r.queryOptions.LastRecord.CreatedAt.UTC()
 			lastDownloadID := r.queryOptions.LastRecord.ID.String()
 
-			if r.queryOptions.ViewMode == dtypes.QueryMediaViewModeOld {
-				conditions = append(conditions, squirrel.Expr(
-					"("+createdAtField+" > ? OR ("+createdAtField+" = ? AND "+downloadIDField+" > ?))",
-					lastCreatedAt, lastCreatedAt, lastDownloadID,
-				))
-			} else {
-				conditions = append(conditions, squirrel.Expr(
-					"("+createdAtField+" < ? OR ("+createdAtField+" = ? AND "+downloadIDField+" < ?))",
-					lastCreatedAt, lastCreatedAt, lastDownloadID,
-				))
-			}
+			conditions = append(conditions, squirrel.Expr(
+				"("+playlistPositionExpr+" > COALESCE((SELECT pi2.position FROM playlist_items pi2 WHERE pi2.download_id = ? AND pi2.playlist_id = '"+playlistIDString+"'), -1)"+
+					" OR ("+playlistPositionExpr+" = COALESCE((SELECT pi2.position FROM playlist_items pi2 WHERE pi2.download_id = ? AND pi2.playlist_id = '"+playlistIDString+"'), -1)"+
+					" AND "+downloadIDField+" > ?))",
+				lastDownloadID, lastDownloadID, lastDownloadID,
+			))
 		}
 	}
 
@@ -580,24 +585,20 @@ func (r *MediaDownloadRepository) iterateAll(
 		orderBys = dbutils.SortBy(eDownload.FieldName(&eDownload.CreatedAt), dbutils.OrderDescending).List()
 	}
 
+	var orderBySQL string
 	if r.queryOptions.playlistID != nil {
-		direction := dbutils.OrderDescending
-		if r.queryOptions.ViewMode == dtypes.QueryMediaViewModeOld {
-			direction = dbutils.OrderAscending
-		}
-
-		orderBys = dbutils.SortBy(eDownload.FieldName(&eDownload.CreatedAt), direction).List()
-		orderBys.Add(eDownload.FieldName(&eDownload.DownloadID), direction)
+		// Ручной порядок: сначала position, при равенстве — по идентификатору.
+		orderBySQL = playlistPositionExpr + " ASC, " + eDownload.FieldName(&eDownload.DownloadID, aliasDownloads) + " ASC"
+	} else {
+		orderBySQL = orderBys.WithAlias(aliasDownloads).Query()
 	}
-
-	orderBys = orderBys.WithAlias(aliasDownloads)
 
 	sqlWhere := conditions
 
 	qb := squirrel.Select(selectFields...).
 		From(eDownload.TableName() + " AS " + aliasDownloads).
 		Where(sqlWhere).
-		OrderBy(orderBys.Query()).
+		OrderBy(orderBySQL).
 		LeftJoin(
 			eDownloadTask.TableName() + " AS " + aliasDownloadTasks +
 				" ON " + eDownloadTask.FieldName(&eDownloadTask.DownloadID, aliasDownloadTasks) +

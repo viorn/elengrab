@@ -5,6 +5,14 @@
             <span class="main-header-description{{ if not .Values.PlaylistHeader.Description }} hidden{{ end }}" id="playlist-header-description">{{ .Values.PlaylistHeader.Description }}</span>
           </div>
           <div class="playlist-header-actions">
+            <span class="playlist-play-controls" id="playlist-play-controls">
+              <button class="modal-dialog__button playlist-play-all" type="button" id="playlist-play-all-button" title="Play the playlist">Play all</button>
+              <select class="playlist-play-mode" id="playlist-play-mode" title="Playback mode">
+                <option value="order">In order</option>
+                <option value="repeat">Repeat</option>
+                <option value="shuffle">Shuffle</option>
+              </select>
+            </span>
             <span class="playlist-header-count" id="playlist-header-count">Items: {{ .Values.PlaylistHeader.ItemsCount }}</span>
             <span class="playlist-badge{{ if not .Values.PlaylistHeader.IsShared }} hidden{{ end }}">Shared</span>
             {{- if .Values.PlaylistHeader.CanEdit }}

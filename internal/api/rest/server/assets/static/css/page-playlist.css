@@ -27,3 +27,56 @@
     padding: 4px 10px;
     font-size: 12px;
 }
+
+.playlist-play-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.playlist-play-mode {
+    padding: 4px 6px;
+    font-size: 12px;
+    border-radius: var(--border-radius, 6px);
+    border: 1px solid var(--border-color, rgba(127, 127, 127, 0.3));
+    background: var(--bg-input, transparent);
+    color: inherit;
+}
+
+/* Drag & drop ordering */
+.playlist-row-drag-handle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    flex: 0 0 22px;
+    align-self: stretch;
+    cursor: grab;
+    color: var(--color-text-secondary);
+    opacity: 0.55;
+    user-select: none;
+    touch-action: none;
+}
+
+.playlist-row-drag-handle:hover {
+    opacity: 1;
+}
+
+.playlist-row-drag-handle:active {
+    cursor: grabbing;
+}
+
+.media-result__row.playlist-row--dragging {
+    opacity: 0.5;
+    outline: 1px dashed var(--color-text-secondary);
+}
+
+@media (max-width: 580px) {
+    .playlist-play-controls {
+        gap: 4px;
+    }
+
+    .playlist-play-mode {
+        max-width: 92px;
+    }
+}

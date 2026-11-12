@@ -75,16 +75,14 @@ export function getSearchQueryValues() {
     }
 
     if (rows.dataset.searchFiltersJson) {
+        // Пробрасываем все фильтры страницы (канал, пользователь, плейлист),
+        // иначе поиск потеряет контекст и уйдёт в общий список.
         const searchFilters = JSON.parse(rows.dataset.searchFiltersJson);
-        const userName = searchFilters.userName;
-        const channelId = searchFilters.channelId;
 
-        if (userName) {
-            queryValues.userName = userName;
-        }
-
-        if (channelId) {
-            queryValues.channelId = channelId;
+        for (const [key, value] of Object.entries(searchFilters)) {
+            if (value) {
+                queryValues[key] = value;
+            }
         }
     }
 

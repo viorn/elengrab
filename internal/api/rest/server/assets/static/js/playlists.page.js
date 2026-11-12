@@ -59,6 +59,62 @@ function initCreateForm() {
     });
 }
 
+// Фильтр карточек плейлистов по названию/описанию.
+// Штатный поиск на этой странице не нужен: он ищет по медиа, а строк media-result
+// здесь нет, поэтому перехватываем запрос и фильтруем карточки на месте.
+function initPlaylistsSearch() {
+    const source = document.getElementById('historySearchInput');
+    if (!source) return;
+
+    // Поле поиска в шапке рассчитано на страницы со списком медиа (htmx-post в
+    // /downloader/search). Здесь строк медиа нет, поэтому снимаем htmx-атрибуты:
+    // элемент заменяем клоном, иначе htmx продолжит дёргать несуществующий поиск.
+    const input = source.cloneNode(true);
+    for (const attribute of [...input.attributes]) {
+        if (attribute.name.startsWith('hx-')) {
+            input.removeAttribute(attribute.name);
+        }
+    }
+    source.replaceWith(input);
+
+    const applyFilter = () => {
+        const query = input.value.trim().toLowerCase();
+        const cards = [...document.querySelectorAll('.playlist-card')];
+        let visible = 0;
+
+        for (const card of cards) {
+            const text = card.textContent.toLowerCase();
+            const match = !query || text.includes(query);
+            card.classList.toggle('hidden', !match);
+            if (match) visible++;
+        }
+
+        if (cards.length === 0) return;
+
+        let empty = document.getElementById('playlists-empty');
+        if (!empty) {
+            empty = document.createElement('div');
+            empty.className = 'playlists__empty hidden';
+            empty.id = 'playlists-empty';
+            (document.getElementById('playlists') || document.body).appendChild(empty);
+        }
+
+        empty.textContent = 'No playlists match the search';
+        empty.classList.toggle('hidden', visible > 0);
+    };
+
+    input.addEventListener('input', applyFilter);
+    input.addEventListener('search', applyFilter);
+
+    const clearButton = document.getElementById('historySearchClearButton');
+    if (clearButton) {
+        clearButton.addEventListener('click', () => {
+            input.value = '';
+            applyFilter();
+        });
+    }
+}
+
 // Disable browser scroll position restoration
 if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
@@ -89,6 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Init the playlist creation form
     initCreateForm();
+
+    // Init playlist cards filter
+    initPlaylistsSearch();
 });
 
 // Force scroll to top after full page load

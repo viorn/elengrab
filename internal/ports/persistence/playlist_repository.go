@@ -27,6 +27,8 @@ type PlaylistRepository interface {
 	AddItem(ctx context.Context, playlistID, downloadID uuid.UUID) error
 	// RemoveItem removes a media download from a playlist.
 	RemoveItem(ctx context.Context, playlistID, downloadID uuid.UUID) error
+	// UpdatePositions rewrites the order of playlist items.
+	UpdatePositions(ctx context.Context, playlistID uuid.UUID, downloadIDs []uuid.UUID) error
 	// ItemExists reports whether the media download belongs to the playlist.
 	ItemExists(ctx context.Context, playlistID, downloadID uuid.UUID) (bool, error)
 	// ListPlaylistIDsByDownload returns identifiers of playlists containing the download.

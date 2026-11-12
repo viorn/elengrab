@@ -229,6 +229,28 @@ func (uc *downloader) RemovePlaylistItem(
 	return uc.playlistRepo().RemoveItem(ctx, playlistID, downloadID)
 }
 
+// ReorderPlaylistItems rewrites the order of the playlist items.
+func (uc *downloader) ReorderPlaylistItems(
+	ctx context.Context,
+	authCtx dauth.AuthContext,
+	playlistID uuid.UUID,
+	downloadIDs []uuid.UUID,
+) error {
+	playlist, err := uc.getPlaylistForUser(ctx, authCtx, playlistID)
+	if err != nil {
+		return err
+	}
+	if !uc.canEditPlaylist(authCtx, playlist) {
+		return ierrors.ErrAccessDenied
+	}
+
+	if len(downloadIDs) == 0 {
+		return nil
+	}
+
+	return uc.playlistRepo().UpdatePositions(ctx, playlistID, downloadIDs)
+}
+
 // ListPlaylistsForItem returns visible playlists with membership flags for the download.
 func (uc *downloader) ListPlaylistsForItem(
 	ctx context.Context,

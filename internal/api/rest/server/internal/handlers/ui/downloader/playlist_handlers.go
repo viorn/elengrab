@@ -189,6 +189,49 @@ func (h *DownloaderHandlers) togglePlaylistItem(ctx *fasthttp.RequestCtx, add bo
 	}
 }
 
+// ReorderPlaylistItemsHandler rewrites the order of the playlist items.
+func (h *DownloaderHandlers) ReorderPlaylistItemsHandler(ctx *fasthttp.RequestCtx) {
+	authCtx, err := policy.ResolveUserOrFallback(ctx, h.appMode)
+	if err != nil {
+		nfasthttp.WriteErrorx(ctx, err)
+		return
+	}
+
+	playlistID, err := h.extractPlaylistID(ctx)
+	if err != nil {
+		nfasthttp.WriteErrorx(ctx, err)
+		return
+	}
+
+	var receivedReq dto.PlaylistReorderRequest
+	if err := json.Unmarshal(ctx.PostBody(), &receivedReq); err != nil {
+		nfasthttp.WriteErrorx(ctx, errorx.NewHTTPMessage("Invalid JSON request body", http.StatusBadRequest, err))
+		return
+	}
+
+	if err := h.validators.Validate.Struct(receivedReq); err != nil {
+		nfasthttp.WriteErrorx(ctx, errorx.NewFromError(err, exceptionx.VALIDATE))
+		return
+	}
+
+	downloadIDs := make([]uuid.UUID, 0, len(receivedReq.IDs))
+	for _, encodedID := range receivedReq.IDs {
+		downloadID, err := idcodec.DecodeUUIDBase64URL(encodedID)
+		if err != nil {
+			nfasthttp.WriteErrorx(ctx, apierrors.ErrDownloadIDIsIncorrect)
+			return
+		}
+		downloadIDs = append(downloadIDs, downloadID)
+	}
+
+	if err := h.downloader.ReorderPlaylistItems(ctx, authCtx, playlistID, downloadIDs); err != nil {
+		nfasthttp.WriteErrorx(ctx, err)
+		return
+	}
+
+	ctx.SetStatusCode(fasthttp.StatusNoContent)
+}
+
 // MediaItemPlaylistsHandler renders the "playlists of the item" dialog (GET)
 // or toggles item membership (POST).
 func (h *DownloaderHandlers) MediaItemPlaylistsHandler(ctx *fasthttp.RequestCtx) {

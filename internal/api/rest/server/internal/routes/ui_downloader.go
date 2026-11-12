@@ -115,6 +115,8 @@ func (r *routes) registerUIDownloader(handlers *downloader.DownloaderHandlers, s
 			g.POST(httppaths.PlaylistItemsPath, handlers.AddPlaylistItemHandler)
 			g.DELETE(httppaths.PlaylistItemsPath, handlers.RemovePlaylistItemHandler)
 
+			g.POST(httppaths.PlaylistReorderPath, handlers.ReorderPlaylistItemsHandler)
+
 			g.POST(httppaths.MediaItemPlaylistsPath, handlers.MediaItemPlaylistsHandler)
 		}
 
