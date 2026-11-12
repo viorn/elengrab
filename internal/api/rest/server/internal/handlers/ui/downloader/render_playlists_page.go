@@ -6,6 +6,7 @@ import (
 
 	"github.com/neosy/elengrab/internal/api/rest/server/internal/clientcap"
 	"github.com/neosy/elengrab/internal/api/rest/server/internal/handlers/ui/common/composition/icons"
+	"github.com/neosy/elengrab/internal/api/rest/server/internal/handlers/ui/common/composition/images"
 	"github.com/neosy/elengrab/internal/api/rest/server/internal/handlers/ui/common/composition/pages"
 	"github.com/neosy/elengrab/internal/api/rest/server/internal/handlers/ui/common/composition/paths"
 	pagesdata "github.com/neosy/elengrab/internal/api/rest/server/internal/handlers/ui/downloader/pages_data"
@@ -72,12 +73,18 @@ func (h *DownloaderHandlers) renderPlaylistsPage(
 			continue
 		}
 
+		thumbnailURL := images.ThumbnailDefault().URL
+		if playlist.ThumbnailID != nil {
+			thumbnailURL = httppaths.BuildThumbnailPath(*playlist.ThumbnailID)
+		}
+
 		card := pages.PlaylistCard{
 			EncodedPlaylistID: idcodec.EncodeUUIDBase64URL(playlist.PlaylistID),
 			Title:             playlist.Title,
 			ItemsCount:        playlist.ItemsCount,
 			IsShared:          playlist.IsShared(),
 			CanEdit:           h.canEditPlaylist(authCtx, playlist),
+			ThumbnailURL:      thumbnailURL,
 			URL:               httppaths.BuildPlaylistPath(playlist.PlaylistID),
 		}
 		if playlist.Description != nil {

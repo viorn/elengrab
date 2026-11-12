@@ -24,6 +24,10 @@ type Playlist struct {
 	// Number of media items in the playlist
 	ItemsCount int64
 
+	// ThumbnailID is the thumbnail of the first media item in the playlist.
+	// Nil when the playlist is empty or the item has no thumbnail.
+	ThumbnailID *uuid.UUID
+
 	// Timestamp when the record was created
 	CreatedAt time.Time
 
@@ -65,6 +69,11 @@ func (src *Playlist) Clone() *Playlist {
 	if src.DeletedAt != nil {
 		deletedAt := *src.DeletedAt
 		copy.DeletedAt = &deletedAt
+	}
+
+	if src.ThumbnailID != nil {
+		thumbnailID := *src.ThumbnailID
+		copy.ThumbnailID = &thumbnailID
 	}
 
 	return &copy

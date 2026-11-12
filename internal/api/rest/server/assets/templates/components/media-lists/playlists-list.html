@@ -15,15 +15,20 @@
         <div class="playlists__list" id="playlists-list">
           {{- range .Values.Playlists }}
           <a class="playlist-card" href="{{ .URL }}" data-playlist-id="{{ .EncodedPlaylistID }}">
-            <span class="playlist-card__title">{{ .Title }}</span>
-            {{- if .Description }}
-            <span class="playlist-card__description">{{ .Description }}</span>
-            {{- end }}
-            <span class="playlist-card__meta">
-              <span>Items: {{ .ItemsCount }}</span>
-              {{- if .IsShared }}
-              <span class="playlist-badge">Shared</span>
+            <span class="playlist-card__thumbnail">
+              <img src="{{ .ThumbnailURL }}" alt="" loading="lazy">
+            </span>
+            <span class="playlist-card__body">
+              <span class="playlist-card__title">{{ .Title }}</span>
+              {{- if .Description }}
+              <span class="playlist-card__description">{{ .Description }}</span>
               {{- end }}
+              <span class="playlist-card__meta">
+                <span>Items: {{ .ItemsCount }}</span>
+                {{- if .IsShared }}
+                <span class="playlist-badge">Shared</span>
+                {{- end }}
+              </span>
             </span>
           </a>
           {{- end }}

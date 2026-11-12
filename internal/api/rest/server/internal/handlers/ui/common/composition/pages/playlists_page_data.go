@@ -29,5 +29,8 @@ type PlaylistCard struct {
 	IsShared   bool
 	CanEdit    bool
 
+	// ThumbnailURL is the preview image (thumbnail of the first item).
+	ThumbnailURL string
+
 	URL string
 }

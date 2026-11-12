@@ -3,6 +3,7 @@ package download
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -11,15 +12,27 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	ddownload "github.com/neosy/elengrab/internal/domain/download"
+	dtypes "github.com/neosy/elengrab/internal/domain/types"
 	ierrors "github.com/neosy/elengrab/internal/errors"
 	"github.com/neosy/elengrab/internal/ports/persistence"
 	"github.com/neosy/elengrab/internal/repository/sqlite/dbexec"
 )
 
 const (
-	playlistsTable     = "playlists"
-	playlistItemsTable = "playlist_items"
+	playlistsTable      = "playlists"
+	playlistItemsTable  = "playlist_items"
+	mediaDownloadsTable = "media_downloads"
 )
+
+// firstMediaInfoExpr selects the media_info JSON of the first (by position)
+// non-deleted media item in the playlist. It is used to derive the playlist
+// preview thumbnail.
+const firstMediaInfoExpr = `(SELECT f.media_info
+	FROM ` + playlistItemsTable + ` pi
+	JOIN ` + mediaDownloadsTable + ` f ON f.download_id = pi.download_id AND f.deleted_at IS NULL
+	WHERE pi.playlist_id = p.playlist_id
+	ORDER BY pi.position ASC, pi.added_at ASC
+	LIMIT 1) AS first_media_info`
 
 type PlaylistRepository struct {
 	dbEntry persistence.DBEntry
@@ -194,6 +207,7 @@ func (r *PlaylistRepository) FindByID(ctx context.Context, playlistID uuid.UUID)
 			"p.playlist_id", "p.user_id", "p.title", "p.description",
 			"p.created_at", "p.updated_at", "p.deleted_at",
 			"(SELECT COUNT(*) FROM playlist_items pi WHERE pi.playlist_id = p.playlist_id) AS items_count",
+			firstMediaInfoExpr,
 		).
 		From(playlistsTable + " AS p").
 		Where(squirrel.Eq{"p.playlist_id": playlistID.String(), "p.deleted_at": nil}).
@@ -240,6 +254,7 @@ func (r *PlaylistRepository) List(ctx context.Context, userID *uuid.UUID) ([]*dd
 			"p.playlist_id", "p.user_id", "p.title", "p.description",
 			"p.created_at", "p.updated_at", "p.deleted_at",
 			"(SELECT COUNT(*) FROM playlist_items pi WHERE pi.playlist_id = p.playlist_id) AS items_count",
+			firstMediaInfoExpr,
 		).
 		From(playlistsTable + " AS p").
 		Where(condition).
@@ -456,11 +471,12 @@ type playlistScanner interface {
 
 func scanPlaylist(row playlistScanner) (*ddownload.Playlist, error) {
 	var (
-		playlist      ddownload.Playlist
-		rawPlaylistID string
-		rawUserID     *string
-		description   *string
-		deletedAt     *time.Time
+		playlist       ddownload.Playlist
+		rawPlaylistID  string
+		rawUserID      *string
+		description    *string
+		deletedAt      *time.Time
+		firstMediaInfo *string
 	)
 
 	err := row.Scan(
@@ -472,9 +488,19 @@ func scanPlaylist(row playlistScanner) (*ddownload.Playlist, error) {
 		&playlist.UpdatedAt,
 		&deletedAt,
 		&playlist.ItemsCount,
+		&firstMediaInfo,
 	)
 	if err != nil {
 		return nil, err
+	}
+
+	if firstMediaInfo != nil && *firstMediaInfo != "" {
+		var mediaInfo dtypes.MediaInfo
+		if err := json.Unmarshal([]byte(*firstMediaInfo), &mediaInfo); err == nil {
+			if thumbID := mediaInfo.PreferredThumbnailID(); thumbID != uuid.Nil() {
+				playlist.ThumbnailID = &thumbID
+			}
+		}
 	}
 
 	playlistID, err := uuid.Parse(rawPlaylistID)
