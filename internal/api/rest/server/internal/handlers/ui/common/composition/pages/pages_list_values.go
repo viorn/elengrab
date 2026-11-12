@@ -8,6 +8,10 @@ type PagesListValues struct {
 	HeaderActionsSearchButtonIcon   template.HTML
 	HeaderActionsDownloadButtonIcon template.HTML
 	HeaderActionsAvatarTitle        string
+	HeaderActionsPlaylistsIcon      template.HTML
+
+	// DownloaderPlaylistsPath is the link target of the playlists header button.
+	DownloaderPlaylistsPath string
 
 	UserAvatar UserAvatar
 

@@ -19,10 +19,11 @@ var (
 
 	DonateIcon = newIcon("DonateIconName", "coffee-icon.svg")
 
-	UploadMenuPlusIcon        = newIcon("UploadMenuPlusIconName", "plus-icon.svg")
-	UploadMenuUploadFileIcon  = newIcon("UploadMenuUploadFileIconName", "upload-file-icon.svg")
-	UploadMenuMyDownloadsIcon = newIcon("UploadMenuMyDownloadsIconName", "list-icon.svg")
-	UploadMenuPlaylistsIcon   = newIcon("UploadMenuPlaylistsIconName", "list-icon.svg")
+	UploadMenuPlusIcon         = newIcon("UploadMenuPlusIconName", "plus-icon.svg")
+	UploadMenuUploadFileIcon   = newIcon("UploadMenuUploadFileIconName", "upload-file-icon.svg")
+	UploadMenuMyDownloadsIcon  = newIcon("UploadMenuMyDownloadsIconName", "list-icon.svg")
+	UploadMenuPlaylistsIcon    = newIcon("UploadMenuPlaylistsIconName", "list-icon.svg")
+	HeaderActionsPlaylistsIcon = newIcon("HeaderActionsPlaylistsIconName", "list-icon.svg")
 
 	IndexGrabSettingsButtonIcon = newIcon("IndexGrabSettingsButtonIconName", "settings-icon.svg")
 	IndexGrabGetButtonIcon      = newIcon("IndexGrabGetButtonIconName", "download-cloud-icon.svg")

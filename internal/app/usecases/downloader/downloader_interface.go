@@ -126,6 +126,11 @@ type DownloaderAPI interface {
 	AddPlaylistItem(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID, downloadID uuid.UUID) error
 	RemovePlaylistItem(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID, downloadID uuid.UUID) error
 	ReorderPlaylistItems(ctx context.Context, authCtx dauth.AuthContext, playlistID uuid.UUID, downloadIDs []uuid.UUID) error
+
+	// FetchPlaylistPreview inspects an external playlist (e.g. YouTube) before import.
+	FetchPlaylistPreview(ctx context.Context, authCtx dauth.AuthContext, mediaURL string, limit int) (*PlaylistImportPreview, error)
+	// ImportPlaylist queues the external playlist items into a playlist.
+	ImportPlaylist(ctx context.Context, authCtx dauth.AuthContext, params PlaylistImportParams) (*PlaylistImportResult, error)
 	ListPlaylistsForItem(
 		ctx context.Context,
 		authCtx dauth.AuthContext,

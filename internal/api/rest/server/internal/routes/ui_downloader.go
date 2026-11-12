@@ -74,6 +74,8 @@ func (r *routes) registerUIDownloader(handlers *downloader.DownloaderHandlers, s
 			g.HEAD(httppaths.PlaylistsPath, handlers.PlaylistsPageHandler)
 			g.GET(httppaths.PlaylistsPath, handlers.PlaylistsPageHandler)
 
+			g.GET(httppaths.PlaylistsPreviewPath, handlers.PlaylistPreviewHandler)
+
 			g.HEAD(httppaths.PlaylistPath, handlers.PlaylistPageHandler)
 			g.GET(httppaths.PlaylistPath, handlers.PlaylistPageHandler)
 
@@ -116,6 +118,8 @@ func (r *routes) registerUIDownloader(handlers *downloader.DownloaderHandlers, s
 			g.DELETE(httppaths.PlaylistItemsPath, handlers.RemovePlaylistItemHandler)
 
 			g.POST(httppaths.PlaylistReorderPath, handlers.ReorderPlaylistItemsHandler)
+
+			g.POST(httppaths.PlaylistsImportPath, handlers.PlaylistImportHandler)
 
 			g.POST(httppaths.MediaItemPlaylistsPath, handlers.MediaItemPlaylistsHandler)
 		}

@@ -24,6 +24,9 @@ type mediaDownloadQueryOptions struct {
 
 	// searchText performs a case-insensitive search over title and description.
 	searchText *string
+
+	// mediaURLPatterns limits the result to source URLs matching these LIKE patterns.
+	mediaURLPatterns []string
 }
 
 type queryArgs struct {

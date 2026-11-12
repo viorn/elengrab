@@ -49,6 +49,10 @@ type MediaDownloadRepository interface {
 	GetByStatus(ctx context.Context, status dtypes.MediaDownloadStatus) ([]*ddownload.MediaDownload, error)
 	GetByStatuses(ctx context.Context, statuses []dtypes.MediaDownloadStatus) ([]*ddownload.MediaDownload, error)
 
+	// FindByMediaURLPatterns returns non-deleted downloads whose source URL matches
+	// any of the SQL LIKE patterns.
+	FindByMediaURLPatterns(ctx context.Context, patterns []string) ([]*ddownload.MediaDownload, error)
+
 	GetByPartialHash(ctx context.Context, hash string) ([]*ddownload.MediaDownload, error)
 	GetWithoutPartialHash(ctx context.Context) ([]*ddownload.MediaDownload, error)
 	GetDuplicateHashes(ctx context.Context, scope dtypes.UniquenessScope) ([]ddownload.DuplicateHashRow, error)

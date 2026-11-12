@@ -13,6 +13,7 @@ import * as commonEventHandlers from './sse.events.js';
 import { initIndexMenus as initMenus } from './pages-list.menu-configs.js';
 import * as view from './pages-list.view.js';
 import * as grabForm from './pages-list.grab-form.js';
+import { initPlaylistImport } from './playlist-import.js';
 import * as search from './pages-list.search.js';
 import {  CLASS_NAMES, CLASS_SELECTORS, DOM_ELEMENTS, initDomElements } from "./index-page.dom.js";
 import { initUploadFileDialog } from "upload-file-dialog.js";
@@ -56,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Init media grab form
     grabForm.initMediaGrabForm();
+
+    // Init external playlist import dialog
+    initPlaylistImport();
 
     // Init menus
     initMenus();

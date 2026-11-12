@@ -16,6 +16,9 @@ type Downloader interface {
 
 	FetchChannelInfoWithCookieFallback(ctx context.Context, mediaURL string) (*dtypes.ChannelSource, error)
 
+	// FetchPlaylist returns the flat list of playlist items (no media download).
+	FetchPlaylist(ctx context.Context, url string, limit int, opts ...DownloaderOption) (*PlaylistInfo, error)
+
 	Download(ctx context.Context, url string, options *DownloadOptions) (<-chan *DownloadResult, error)
 
 	ExtractThumbnailURL(ctx context.Context, mediaURL string, opts ...DownloaderOption) (string, error)

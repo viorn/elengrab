@@ -26,6 +26,7 @@ var (
 		"notifications.css",
 		"dialog.css",
 		"playlist-dialog.css",
+		"playlist-import-dialog.css",
 
 		"theme-switcher.css",
 

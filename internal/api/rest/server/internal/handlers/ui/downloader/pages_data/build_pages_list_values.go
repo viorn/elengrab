@@ -7,6 +7,7 @@ import (
 	"github.com/neosy/elengrab/internal/api/rest/server/internal/handlers/ui/common/composition/pages"
 	qkeys "github.com/neosy/elengrab/internal/api/rest/server/internal/handlers/ui/downloader/query_keys.go"
 	"github.com/neosy/elengrab/internal/api/rest/server/internal/handlers/ui/downloader/types"
+	httppaths "github.com/neosy/elengrab/internal/api/rest/server/internal/paths"
 	"github.com/neosy/elengrab/internal/app/usecases/downloader"
 	udto "github.com/neosy/elengrab/internal/app/usecases/dto"
 	dauth "github.com/neosy/elengrab/internal/domain/auth"
@@ -43,6 +44,8 @@ func BuildPagesListValues(
 		HeaderActionsSearchButtonIcon:   icons.UserMenuSearchIcon.FileRaw(),
 		HeaderActionsDownloadButtonIcon: icons.UserMenuDownloadIcon.FileRaw(),
 		HeaderActionsAvatarTitle:        userMenuAvatarTitle,
+		HeaderActionsPlaylistsIcon:      icons.HeaderActionsPlaylistsIcon.FileRaw(),
+		DownloaderPlaylistsPath:         httppaths.DownloaderPlaylistsPath,
 
 		UserAvatar: pages.UserAvatar{
 			Icon:       icons.UserAvatarIconByType(authCtx.UserType()).FileRaw(),

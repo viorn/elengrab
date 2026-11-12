@@ -567,6 +567,17 @@ func (r *MediaDownloadRepository) iterateAll(
 		})
 	}
 
+	if len(r.queryOptions.mediaURLPatterns) > 0 {
+		fieldName := eDownload.FieldName(&eDownload.MediaURL, aliasDownloads)
+
+		likes := make(squirrel.Or, 0, len(r.queryOptions.mediaURLPatterns))
+		for _, pattern := range r.queryOptions.mediaURLPatterns {
+			likes = append(likes, squirrel.Like{fieldName: pattern})
+		}
+
+		conditions = append(conditions, likes)
+	}
+
 	if r.queryOptions.partialHash != nil {
 		fieldName := eDownload.FieldName(&eDownload.PartialHash, aliasDownloads)
 		if *r.queryOptions.partialHash == nil {
@@ -776,6 +787,32 @@ func (r *MediaDownloadRepository) IterateFileNames(ctx context.Context, includeD
 	}
 
 	return nil
+}
+
+// FindByMediaURLPatterns returns non-deleted downloads whose source URL matches
+// any of the SQL LIKE patterns.
+func (r *MediaDownloadRepository) FindByMediaURLPatterns(
+	ctx context.Context,
+	patterns []string,
+) ([]*ddownload.MediaDownload, error) {
+	if len(patterns) == 0 {
+		return nil, nil
+	}
+
+	downloads := make([]*ddownload.MediaDownload, 0, len(patterns))
+
+	r.queryOptions.mediaURLPatterns = patterns
+	r.queryOptions.includeDeleted = false
+
+	err := r.iterateAll(ctx, func(download *ddownload.MediaDownload) error {
+		downloads = append(downloads, download)
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return downloads, nil
 }
 
 func (r *MediaDownloadRepository) GetByStatus(ctx context.Context, status dtypes.MediaDownloadStatus) ([]*ddownload.MediaDownload, error) {

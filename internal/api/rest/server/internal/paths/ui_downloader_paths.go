@@ -52,29 +52,34 @@ const (
 	PlaylistPath        = PlaylistsPath + "/{playlistId}"
 	PlaylistItemsPath   = PlaylistPath + "/items/{itemId}"
 	PlaylistReorderPath = PlaylistPath + "/reorder"
+	// Statics paths are matched before {playlistId} by the router.
+	PlaylistsPreviewPath = PlaylistsPath + "/preview"
+	PlaylistsImportPath  = PlaylistsPath + "/import"
 
 	// Paths users
 	UserLoginPath     = UsersPath + "/{login}"
 	UserDownloadsPath = UserLoginPath + "/downloads"
 
 	// Downloader Paths
-	DownloaderAccountMenuPath     = DownloaderGroup + AccountMenuPath
-	DownloaderSettingsMenuPath    = DownloaderGroup + SettingsMenuPath
-	DownloaderGrabPath            = DownloaderGroup + GrabPath
-	DownloaderShareTargetPath     = DownloaderGroup + ShareTargetPath
-	DownloaderItemsPath           = DownloaderGroup + MediaItemsPath
-	DownloaderDownloadFilePath    = DownloaderGroup + DownloadFilePath
-	DownloaderSearchPath          = DownloaderGroup + SearchPath
-	DownloaderEventsPath          = DownloaderGroup + EventsPath
-	DownloaderChannelsPath        = DownloaderGroup + ChannelsPath
-	DownloaderPlaylistsPath       = DownloaderGroup + PlaylistsPath
-	DownloaderPlaylistPath        = DownloaderGroup + PlaylistPath
-	DownloaderPlaylistItemPath    = DownloaderGroup + PlaylistItemsPath
-	DownloaderPlaylistReorderPath = DownloaderGroup + PlaylistReorderPath
-	DownloaderItemPlaylistsPath   = DownloaderGroup + MediaItemPlaylistsPath
-	DownloaderUsersPath           = DownloaderGroup + ChannelPath
-	DownloaderUploadPath          = DownloaderGroup + UploadPath
-	DownloaderUploadFilePath      = DownloaderGroup + UploadFilePath
+	DownloaderAccountMenuPath      = DownloaderGroup + AccountMenuPath
+	DownloaderSettingsMenuPath     = DownloaderGroup + SettingsMenuPath
+	DownloaderGrabPath             = DownloaderGroup + GrabPath
+	DownloaderShareTargetPath      = DownloaderGroup + ShareTargetPath
+	DownloaderItemsPath            = DownloaderGroup + MediaItemsPath
+	DownloaderDownloadFilePath     = DownloaderGroup + DownloadFilePath
+	DownloaderSearchPath           = DownloaderGroup + SearchPath
+	DownloaderEventsPath           = DownloaderGroup + EventsPath
+	DownloaderChannelsPath         = DownloaderGroup + ChannelsPath
+	DownloaderPlaylistsPath        = DownloaderGroup + PlaylistsPath
+	DownloaderPlaylistPath         = DownloaderGroup + PlaylistPath
+	DownloaderPlaylistItemPath     = DownloaderGroup + PlaylistItemsPath
+	DownloaderPlaylistReorderPath  = DownloaderGroup + PlaylistReorderPath
+	DownloaderPlaylistsPreviewPath = DownloaderGroup + PlaylistsPreviewPath
+	DownloaderPlaylistsImportPath  = DownloaderGroup + PlaylistsImportPath
+	DownloaderItemPlaylistsPath    = DownloaderGroup + MediaItemPlaylistsPath
+	DownloaderUsersPath            = DownloaderGroup + ChannelPath
+	DownloaderUploadPath           = DownloaderGroup + UploadPath
+	DownloaderUploadFilePath       = DownloaderGroup + UploadFilePath
 )
 
 func buildMediaItemPath(path string, downloadID uuid.UUID) string {

@@ -16,7 +16,6 @@ type accountMenuAction struct {
 
 const (
 	accountMenuActionMyDownloads = "my-downloads"
-	accountMenuActionPlaylists   = "playlists"
 	accountMenuActionUsers       = "users"
 	accountMenuActionLogout      = "logout"
 )
@@ -32,18 +31,6 @@ var accountMenuActions = []accountMenuAction{
 			},
 		},
 		icon: &icons.UploadMenuMyDownloadsIcon,
-	},
-	{
-		menuAction: menuAction{
-			RenderType: renderTypeLink,
-			Action:     accountMenuActionPlaylists,
-			Title:      "Playlists",
-			Link: linkOptions{
-				URLTemplate: httppaths.DownloaderPlaylistsPath,
-				NewTab:      false,
-			},
-		},
-		icon: &icons.UploadMenuPlaylistsIcon,
 	},
 	{
 		menuAction: menuAction{
